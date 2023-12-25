@@ -69,12 +69,19 @@ public class Register extends AppCompatActivity {
 
                        if(task.isSuccessful()) {
                            Toast.makeText(Register.this,"User Created.", Toast.LENGTH_SHORT).show();
-                           startActivity(new Intent(getApplicationContext(),MainActivity.class));
+                           startActivity(new Intent(getApplicationContext(),Login.class));
                        }else {
                            Toast.makeText(Register.this,"ERROR !" + task.getException().getMessage(),Toast.LENGTH_SHORT).show();
                        }
                    }
                });
+            }
+        });
+
+        mLoginBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(),Login.class));
             }
         });
     }
