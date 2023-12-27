@@ -2,13 +2,16 @@ package com.example.authenticatorapp;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,7 +31,8 @@ public class MainActivity extends AppCompatActivity {
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
     String userId;
-    Button resendCode;
+    Button resendCode,resetPasLocal;
+    FirebaseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
         phone = findViewById(R.id.profilePhone);
         email = findViewById(R.id.profileEmail);
         fullName = findViewById(R.id.profileName);
+        resetPasLocal = findViewById(R.id.resetPasswordLocal);
 
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
@@ -45,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         verifyMsg = findViewById(R.id.verifyMsg);
 
         userId = fAuth.getCurrentUser().getUid();
-        FirebaseUser user = fAuth.getCurrentUser();
+        user = fAuth.getCurrentUser();
 
         if(!user.isEmailVerified()) {
             verifyMsg.setVisibility(View.VISIBLE);
@@ -78,6 +83,44 @@ public class MainActivity extends AppCompatActivity {
                 phone.setText(documentSnapshot.getString("phone"));
                 fullName.setText(documentSnapshot.getString("fname"));
                 email.setText(documentSnapshot.getString("email"));
+            }
+        });
+
+        resetPasLocal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final EditText resetPassword = new EditText(v.getContext());
+
+                final AlertDialog.Builder passwordResetDialog = new AlertDialog.Builder(v.getContext());
+                passwordResetDialog.setTitle("Reset Password ? ");
+                passwordResetDialog.setMessage("Enter New Password");
+                passwordResetDialog.setView(resetPassword);
+
+                passwordResetDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //extract the email and send reset link
+                        String newPassword = resetPassword.getText().toString();
+                        user.updatePassword(newPassword).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void unused) {
+                                Toast.makeText(MainActivity.this, "Password Reset Successfully !", Toast.LENGTH_SHORT).show();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(MainActivity.this, "Password Reset Failed !", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                });
+                passwordResetDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+                passwordResetDialog.create().show();
             }
         });
 
