@@ -157,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
                 i.putExtra("email", email.getText().toString());
                 i.putExtra("phone", phone.getText().toString());
                 i.putExtra("userId", userId);
-                startActivity(i);
+                startActivityForResult(i,1);
             }
         });
 
@@ -166,14 +166,24 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == 1000) {
-            if(resultCode == Activity.RESULT_OK) {
-                Uri imageUri = data.getData();
-                Log.d("TAG", "Selected Image URI: " + imageUri);
-                profileImage.setImageURI(imageUri);
-                uploadImageToFirebase(imageUri);
-            }
+
+        if (requestCode == 1 && resultCode == RESULT_OK) {
+
+            refreshData();
         }
+    }
+
+    private void refreshData() {
+        // Update UI with the latest data
+        DocumentReference documentReference = fStore.collection("users").document(userId);
+        documentReference.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                phone.setText(documentSnapshot.getString("phone"));
+                fullName.setText(documentSnapshot.getString("fname"));
+                email.setText(documentSnapshot.getString("email"));
+            }
+        });
     }
 
     private void uploadImageToFirebase(Uri imageUri) {

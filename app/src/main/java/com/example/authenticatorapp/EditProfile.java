@@ -83,27 +83,39 @@ public class EditProfile extends AppCompatActivity {
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(profileFullName.getText().toString().isEmpty() || profileEmail.getText().toString().isEmpty() || profilePhone.getText().toString().isEmpty()) {
+                if(profileFullName.getText().toString().isEmpty() ||
+                        profileEmail.getText().toString().isEmpty() ||
+                        profilePhone.getText().toString().isEmpty()) {
                     Toast.makeText(EditProfile.this, "One or Many Fields are Empty.", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                String email = profileEmail.getText().toString();
-                user.updateEmail(email).addOnSuccessListener(new OnSuccessListener<Void>() {
+
+                String newEmail = profileEmail.getText().toString();
+                String newName = profileFullName.getText().toString();
+                String newPhone = profilePhone.getText().toString();
+
+                user.updateEmail(newEmail).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
                         DocumentReference docRef = fStore.collection("users").document(user.getUid());
                         Map<String,Object> edited = new HashMap<>();
-                        edited.put("email", email);
-                        edited.put("fName", profileFullName.getText().toString());
-                        edited.put("phone", profilePhone.getText().toString());
+                        edited.put("email", newEmail);
+                        edited.put("fname", newName);
+                        edited.put("phone", newPhone);
+
                         docRef.update(edited).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void unused) {
                                 Toast.makeText(EditProfile.this, "Profile Updated!", Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(getApplicationContext(),MainActivity.class));
+
+                                // Update the displayed name immediately
+                                profileFullName.setText(newName);
+
+                                setResult(RESULT_OK);
                                 finish();
                             }
                         });
+
                         Toast.makeText(EditProfile.this, "Email is Changed!", Toast.LENGTH_SHORT).show();
                     }
                 }).addOnFailureListener(new OnFailureListener(){
@@ -114,6 +126,7 @@ public class EditProfile extends AppCompatActivity {
                 });
             }
         });
+
 
         profileEmail.setText(email);
         profileFullName.setText(fullName);
