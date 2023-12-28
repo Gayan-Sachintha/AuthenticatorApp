@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
         fullName = findViewById(R.id.profileName);
         resetPasLocal = findViewById(R.id.resetPasswordLocal);
 
-        profileImage = findViewById(R.id.profileImage);
+        profileImage = findViewById(R.id.profileImageView);
         changeProfileImage = findViewById(R.id.changeProfile);
 
         fAuth = FirebaseAuth.getInstance();
@@ -105,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
                 phone.setText(documentSnapshot.getString("phone"));
                 fullName.setText(documentSnapshot.getString("fname"));
                 email.setText(documentSnapshot.getString("email"));
+
             }
         });
 
@@ -150,8 +151,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //open  gallery
-                Intent openGalleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(openGalleryIntent, 1000);
+
+                Intent i = new Intent(v.getContext(),EditProfile.class);
+                i.putExtra("fullName", fullName.getText().toString());
+                i.putExtra("email", email.getText().toString());
+                i.putExtra("phone", phone.getText().toString());
+                i.putExtra("userId", userId);
+                startActivity(i);
             }
         });
 

@@ -38,7 +38,7 @@
         app:layout_constraintVertical_bias="0.972" />
 
     <ImageView
-        android:id="@+id/profileImage"
+        android:id="@+id/profileImageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -60,7 +60,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profileImage"
+        app:layout_constraintTop_toBottomOf="@+id/profileImageView"
         app:layout_constraintVertical_bias="0.062"
         android:drawableLeft="@drawable/baseline_person_24"/>
 
@@ -142,7 +142,7 @@
         android:id="@+id/changeProfile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Change Profile Image"
+        android:text="Change Profile Settings"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
