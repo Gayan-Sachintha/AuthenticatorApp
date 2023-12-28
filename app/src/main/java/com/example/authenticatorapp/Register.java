@@ -90,7 +90,7 @@ public class Register extends AppCompatActivity {
                            fuser.sendEmailVerification().addOnSuccessListener(new OnSuccessListener<Void>() {
                                @Override
                                public void onSuccess(Void unused) {
-                                    Toast.makeText(Register.this, "Veification Wmail Has Been Sent !", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(Register.this, "Veification Email Has Been Sent !", Toast.LENGTH_SHORT).show();
                                }
                            }).addOnFailureListener(new OnFailureListener() {
                                @Override

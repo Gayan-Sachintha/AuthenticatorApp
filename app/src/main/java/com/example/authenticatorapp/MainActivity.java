@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
         fStore = FirebaseFirestore.getInstance();
         storageReference = FirebaseStorage.getInstance().getReference();
 
-        StorageReference profileRef = storageReference.child("users/"+fAuth.getCurrentUser().getUid()+"/Profile.jpg");
+        StorageReference profileRef = storageReference.child("users/"+fAuth.getCurrentUser().getUid()+"/profile.jpg");
         profileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
@@ -163,8 +163,8 @@ public class MainActivity extends AppCompatActivity {
         if(requestCode == 1000) {
             if(resultCode == Activity.RESULT_OK) {
                 Uri imageUri = data.getData();
+                Log.d("TAG", "Selected Image URI: " + imageUri);
                 profileImage.setImageURI(imageUri);
-
                 uploadImageToFirebase(imageUri);
             }
         }
@@ -172,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void uploadImageToFirebase(Uri imageUri) {
         //upload image to firebase storage
-        StorageReference fileRef = storageReference.child("users/"+fAuth.getCurrentUser().getUid()+"/Profile.jpg");
+        StorageReference fileRef = storageReference.child("users/"+fAuth.getCurrentUser().getUid()+"/profile.jpg");
         fileRef.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -187,6 +187,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFailure(@NonNull Exception e) {
                 Toast.makeText(MainActivity.this, "Failed !",Toast.LENGTH_SHORT).show();
+                Log.e("TAG", "Upload Failed", e);
             }
         });
     }
